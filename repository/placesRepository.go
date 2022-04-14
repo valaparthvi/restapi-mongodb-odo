@@ -5,18 +5,20 @@ import (
 	"fmt"
 	. "go-rest-mongodb/config"
 	"go-rest-mongodb/models"
+	"log"
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
-	"time"
 )
 
-type PlacesRepository struct {}
+type PlacesRepository struct{}
 
 var config Config
 var collection = new(mongo.Collection)
+
 const PlacesCollection = "Places"
 
 func init() {
@@ -24,7 +26,10 @@ func init() {
 
 	// Connect to DB
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(config.Database.Uri))
+
+	//mongodb://[username:password@]host1[:port1][,...hostN[:portN]][/[defaultauthdb][?options]]
+	mongoUri := fmt.Sprintf("mongodb://%s:%s@%s:%s/%s", config.Database.Username, config.Database.Password, config.Database.Uri, config.Server.Port, config.Database.DatabaseName)
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoUri))
 	if err != nil {
 		log.Fatal(err)
 	}
