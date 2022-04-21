@@ -8,19 +8,11 @@ import (
 )
 
 type Config struct {
-	Server   Server
-	Database Database
+	Server Server
 }
 
 type Server struct {
 	Port string
-}
-
-type Database struct {
-	Uri          string
-	DatabaseName string
-	Username     string
-	Password     string
 }
 
 func (c *Config) Read() {

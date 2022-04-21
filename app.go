@@ -1,12 +1,14 @@
 package main
 
 import (
-	log "github.com/sirupsen/logrus"
+	"fmt"
 	. "go-rest-mongodb/config"
 	"go-rest-mongodb/routers"
 	"net/http"
 	"os"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 var config Config
@@ -23,9 +25,9 @@ func main() {
 	log.SetFormatter(logFormatter)
 
 	r := routers.Routers()
-	srv := &http.Server {
-		Handler: r,
-		Addr:    config.Server.Port,
+	srv := &http.Server{
+		Handler:      r,
+		Addr:         fmt.Sprintf(":%s", config.Server.Port),
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}

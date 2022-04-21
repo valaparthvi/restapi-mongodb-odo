@@ -3,11 +3,12 @@ package repository
 import (
 	"context"
 	"fmt"
-	. "go-rest-mongodb/config"
+
 	"go-rest-mongodb/models"
 	"log"
 	"time"
 
+	"github.com/nebhale/client-go/bindings"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -16,24 +17,43 @@ import (
 
 type PlacesRepository struct{}
 
-var config Config
 var collection = new(mongo.Collection)
 
 const PlacesCollection = "Places"
 
 func init() {
-	config.Read()
-
 	// Connect to DB
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
-	//mongodb://[username:password@]host1[:port1][,...hostN[:portN]][/[defaultauthdb][?options]]
-	mongoUri := fmt.Sprintf("mongodb://%s:%s@%s:%s/%s", config.Database.Username, config.Database.Password, config.Database.Uri, config.Server.Port, config.Database.DatabaseName)
+	b := bindings.FromServiceBindingRoot()
+	b = bindings.Filter(b, "mongodb")
+	if len(b) != 1 {
+		log.Fatalf("Incorrect number of 'mongodb' bindings: %d\n", len(b))
+	}
+	binding := b[0]
+
+	username := getBinding(binding, "username")
+	password := getBinding(binding, "password")
+	host := getBinding(binding, "host")
+	port := "27017"
+	database := "percona"
+
+	mongoUri := fmt.Sprintf("mongodb://%s:%s@%s:%s/%s", username, password, host, port, database)
+
+	fmt.Printf("DEBUG: MongoDB connection string: %s\n", mongoUri)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoUri))
 	if err != nil {
 		log.Fatal(err)
 	}
-	collection = client.Database(config.Database.DatabaseName).Collection(PlacesCollection)
+	collection = client.Database(database).Collection(PlacesCollection)
+}
+
+func getBinding(b bindings.Binding, name string) string {
+	u, ok := bindings.Get(b, name)
+	if !ok {
+		log.Fatalf("No binding %s found", name)
+	}
+	return u
 }
 
 // Get all Places

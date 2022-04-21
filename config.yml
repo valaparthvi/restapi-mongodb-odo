@@ -1,7 +1,2 @@
-database:
-  uri: "localhost"
-  databasename: ""
-  username: "userAdmin"
-  password: "8e5bk8uXeHVhG0gLJ1"
 server:
   port: "3000"
