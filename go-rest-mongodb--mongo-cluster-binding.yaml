@@ -1,0 +1,17 @@
+# tag::service-binding[]
+apiVersion: binding.operators.coreos.com/v1alpha1
+kind: ServiceBinding
+metadata:
+  name: go-rest-mongodb--mongo-cluster
+spec:
+  application:
+    group: apps
+    name: go-rest-mongodb
+    resource: deployments
+    version: v1
+  services:
+  - group: psmdb.percona.com
+    kind: PerconaServerMongoDB
+    name: mongo-cluster
+    version: v1-11-0
+# end::service-binding[]

@@ -40,7 +40,7 @@ func init() {
 	defaultDatabase := "admin"
 	database := getBindingWithDefault(binding, "database", &defaultDatabase)
 
-	mongoUri := fmt.Sprintf("mongodb://%s:%s@%s:%s/%s", username, password, host, port, database)
+	mongoUri := fmt.Sprintf("mongodb://%s:%s@%s:%s/%s?ssl=false", username, password, host, port, database)
 
 	fmt.Printf("DEBUG: MongoDB connection string: %s\n", mongoUri)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoUri))
