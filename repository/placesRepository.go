@@ -35,8 +35,10 @@ func init() {
 	username := getBinding(binding, "username")
 	password := getBinding(binding, "password")
 	host := getBinding(binding, "host")
-	port := "27017"
-	database := "percona"
+	defaultPort := "27017"
+	port := getBindingWithDefault(binding, "port", &defaultPort)
+	defaultDatabase := "admin"
+	database := getBindingWithDefault(binding, "database", &defaultDatabase)
 
 	mongoUri := fmt.Sprintf("mongodb://%s:%s@%s:%s/%s", username, password, host, port, database)
 
@@ -49,8 +51,15 @@ func init() {
 }
 
 func getBinding(b bindings.Binding, name string) string {
+	return getBindingWithDefault(b, name, nil)
+}
+
+func getBindingWithDefault(b bindings.Binding, name string, defaultValue *string) string {
 	u, ok := bindings.Get(b, name)
 	if !ok {
+		if defaultValue != nil {
+			return *defaultValue
+		}
 		log.Fatalf("No binding %s found", name)
 	}
 	return u

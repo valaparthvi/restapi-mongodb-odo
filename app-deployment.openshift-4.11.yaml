@@ -1,0 +1,44 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-rest-mongodb
+spec:
+  selector:
+    matchLabels:
+      app: go-rest-mongodb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: go-rest-mongodb
+    spec:
+      containers:
+        - name: go-rest-mongodb
+          image: quay.io/pmacik/go-rest-mongodb:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - "ALL"
+            seccompProfile:
+              type: RuntimeDefault
+            runAsNonRoot: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-rest-mongodb
+spec:
+  ports:
+    - port: 3000
+      protocol: TCP
+      targetPort: 3000
+  selector:
+    app: go-rest-mongodb
