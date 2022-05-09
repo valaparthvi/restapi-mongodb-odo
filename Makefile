@@ -5,10 +5,9 @@ NAMESPACE ?= default
 
 MULTIARCH_PLATFORMS ?= linux/amd64,linux/arm64,linux/s390x,linux/ppc64le
 
-# one of "openshift", "minikube"
 KUBERNETES_RUNTIME ?= openshift
 
-RUNTIME_VERSION ?= 4.11
+RUNTIME_VERSION ?= default
 
 CLI ?= kubectl -n $(NAMESPACE)
 
@@ -37,4 +36,16 @@ deploy-app:
 deploy-mongodb:
 	$(CLI) apply -f mongo-cluster.yaml
 	$(CLI) wait --for=condition=ready=True PerconaServerMongoDB/mongo-cluster --timeout=5m
+
+.PHONY: mongo-uri
+mongo-uri:
+	@echo mongodb://$$(kubectl get secret mongo-cluster-secrets -o jsonpath='{.data.MONGODB_USER_ADMIN_USER}' | base64 -d):$$(kubectl get secret mongo-cluster-secrets -o jsonpath='{.data.MONGODB_USER_ADMIN_PASSWORD}' | base64 -d)@$$(kubectl get PerconaServerMongoDB mongo-cluster -o jsonpath='{.status.host}'):27017/admin?ssl=false
+
+.PHONY: bind-mongodb
+bind-mongodb:
+	$(CLI) apply -f go-rest-mongodb-binding.yaml
+
+.PHONY: unbind-mongodb
+unbind-mongodb:
+	$(CLI) delete -f go-rest-mongodb-binding.yaml
 

@@ -37,16 +37,26 @@ func init() {
 	host := getBinding(binding, "host")
 	defaultPort := "27017"
 	port := getBindingWithDefault(binding, "port", &defaultPort)
-	defaultDatabase := "admin"
+	defaultDatabase := "go-rest-mongodb"
 	database := getBindingWithDefault(binding, "database", &defaultDatabase)
 
-	mongoUri := fmt.Sprintf("mongodb://%s:%s@%s:%s/%s?ssl=false", username, password, host, port, database)
-
+	mongoUri := fmt.Sprintf("mongodb://%s:%s@%s:%s/admin?ssl=false", username, password, host, port)
 	fmt.Printf("DEBUG: MongoDB connection string: %s\n", mongoUri)
+
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoUri))
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	r := client.Database("admin").RunCommand(
+		context.Background(),
+		bson.D{{"grantRolesToUser", username},
+			{"roles", bson.A{bson.D{{"db", database}, {"role", "readWrite"}}}}},
+	)
+	if r.Err() != nil {
+		panic(r.Err())
+	}
+
 	collection = client.Database(database).Collection(PlacesCollection)
 }
 

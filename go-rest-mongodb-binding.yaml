@@ -2,7 +2,7 @@
 apiVersion: binding.operators.coreos.com/v1alpha1
 kind: ServiceBinding
 metadata:
-  name: go-rest-mongodb--mongo-cluster
+  name: go-rest-mongodb
 spec:
   application:
     group: apps

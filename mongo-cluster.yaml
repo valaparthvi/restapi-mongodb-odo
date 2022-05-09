@@ -13,17 +13,21 @@ spec:
   secrets:
     users: mongo-cluster-secrets
   replsets:
-    - name: rs0
+  - name: rs0
+    size: 1
+    volumeSpec:
+      persistentVolumeClaim:
+        resources:
+          requests:
+            storage: 1Gi
+  sharding:
+    enabled: true
+    configsvrReplSet:
       size: 1
       volumeSpec:
         persistentVolumeClaim:
           resources:
             requests:
               storage: 1Gi
-      podSecurityContext:
-        runAsUser: 1001
-        runAsGroup: 1001
-        fsGroup: 1001
-
-  sharding:
-    enabled: false
+    mongos:
+      size: 1
