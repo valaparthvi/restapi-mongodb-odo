@@ -41,6 +41,7 @@ deploy-mongodb:
 mongo-uri:
 	@echo mongodb://$$(kubectl get secret mongo-cluster-secrets -o jsonpath='{.data.MONGODB_USER_ADMIN_USER}' | base64 -d):$$(kubectl get secret mongo-cluster-secrets -o jsonpath='{.data.MONGODB_USER_ADMIN_PASSWORD}' | base64 -d)@$$(kubectl get PerconaServerMongoDB mongo-cluster -o jsonpath='{.status.host}'):27017/admin?ssl=false
 
+
 .PHONY: bind-mongodb
 bind-mongodb:
 	$(CLI) apply -f go-rest-mongodb-binding.yaml
