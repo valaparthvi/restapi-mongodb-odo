@@ -1,3 +1,10 @@
+# How to install application and service in odo:
+1. Install percona distribution mongodb operator on cluster
+2. odo create project mongodb-restapi
+3. odo create go restapi
+4. odo service create --from-file mongo-cluster.yaml
+5. odo link <servicename>
+
 # REST API with Go and MongoDB
 REST API with Golang and MongoDB.
 * HTTP router
