@@ -5,6 +5,7 @@ commands:
     group:
       isDefault: true
       kind: build
+    hotReloadCapable: false
     workingDir: ${PROJECT_SOURCE}
   id: build
 - exec:
@@ -13,17 +14,27 @@ commands:
     group:
       isDefault: true
       kind: run
+    hotReloadCapable: false
     workingDir: ${PROJECT_SOURCE}
   id: run
 components:
 - container:
+    dedicatedPod: false
     endpoints:
     - name: port-3000-tcp
       protocol: tcp
+      secure: false
       targetPort: 3000
     image: golang:latest
     memoryLimit: 1024Mi
     mountSources: true
+    env:
+    - name: username
+      value: userAdmin
+    - name: password
+      value: DTBPTFe7N0HZEaVgs
+    - name: host
+      value: minimal-cluster-mongos
   name: runtime
 metadata:
   description: Stack with the latest Go version

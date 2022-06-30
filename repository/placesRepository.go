@@ -3,12 +3,12 @@ package repository
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"go-rest-mongodb/models"
 	"log"
 	"time"
 
-	"github.com/nebhale/client-go/bindings"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -25,20 +25,13 @@ func init() {
 	// Connect to DB
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
-	b := bindings.FromServiceBindingRoot()
-	b = bindings.Filter(b, "mongodb")
-	if len(b) != 1 {
-		log.Fatalf("Incorrect number of 'mongodb' bindings: %d\n", len(b))
-	}
-	binding := b[0]
-
-	username := getBinding(binding, "username")
-	password := getBinding(binding, "password")
-	host := getBinding(binding, "host")
+	username := getBinding("username")
+	password := getBinding("password")
+	host := getBinding("host")
 	defaultPort := "27017"
-	port := getBindingWithDefault(binding, "port", &defaultPort)
+	port := getBindingWithDefault("port", &defaultPort)
 	defaultDatabase := "go-rest-mongodb"
-	database := getBindingWithDefault(binding, "database", &defaultDatabase)
+	database := getBindingWithDefault("database", &defaultDatabase)
 
 	mongoUri := fmt.Sprintf("mongodb://%s:%s@%s:%s/admin?ssl=false", username, password, host, port)
 	fmt.Printf("DEBUG: MongoDB connection string: %s\n", mongoUri)
@@ -60,13 +53,13 @@ func init() {
 	collection = client.Database(database).Collection(PlacesCollection)
 }
 
-func getBinding(b bindings.Binding, name string) string {
-	return getBindingWithDefault(b, name, nil)
+func getBinding(name string) string {
+	return getBindingWithDefault(name, nil)
 }
 
-func getBindingWithDefault(b bindings.Binding, name string, defaultValue *string) string {
-	u, ok := bindings.Get(b, name)
-	if !ok {
+func getBindingWithDefault(name string, defaultValue *string) string {
+	u := os.Getenv(name)
+	if u == "" {
 		if defaultValue != nil {
 			return *defaultValue
 		}
