@@ -32,5 +32,4 @@ bin/
 ### Build
 go-rest-mongodb
 
-.odo/env
-.odo/odo-file-index.json
+vendor
