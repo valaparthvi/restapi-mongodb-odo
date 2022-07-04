@@ -1,9 +1,9 @@
-# How to install application and service in odo:
-1. Install percona distribution mongodb operator on cluster
-2. odo create project mongodb-restapi
-3. odo create go restapi
-4. odo service create --from-file mongo-cluster.yaml
-5. odo link <servicename>
+# Install application and service with odo:
+1. Install percona distribution mongodb operator, and service binding operator on cluster
+2. odo create namespace mongodb-restapi
+3. odo init --devfile=go --name=restapi
+4. kubectl apply -f https://raw.githubusercontent.com/percona/percona-server-mongodb-operator/v1.12.0/deploy/cr-minimal.yaml
+5. odo add binding --service minimal-cluster --name my-binding --bind-as-files=false
 
 # REST API with Go and MongoDB
 REST API with Golang and MongoDB.
@@ -13,25 +13,13 @@ REST API with Golang and MongoDB.
 * ENV configurations
 * Formatted logs
 
-## Dependencies
-``go get github.com/gorilla/mux``  
-``go get go.mongodb.org/mongo-driver/mongo``  
-``go get github.com/spf13/viper``  
-``go get github.com/githubnemo/CompileDaemon``
+## API Endpoints
+- GET `/api/places` - List all places
+- POST `/api/places` - Add a new place
+- PUT `/api/places` - Update a place
+- GET `/api/places/<id>` - Fetch place with id `<id>`
+- DELETE `/api/places/<id>` - Delete place with id `<id>`
 
-## Build
-``go build``
-
-## Run
-``ENV=dev ./go-rest-mongodb``  
-``ENV=prod ./go-rest-mongodb``
-
-## Watch
-``CompileDaemon -command="./go-rest-mongodb"``
-
-## API
-### Postman collection
-[Postman collection](/postman-collection.json)
 
 ## Resources
 mux: A powerful HTTP router and URL matcher for building Go web servers. https://github.com/gorilla/mux
