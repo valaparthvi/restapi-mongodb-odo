@@ -1,9 +1,0 @@
-apiVersion: v2
-appVersion: 1.12.0
-description: A Helm chart for installing a minimal Percona Server MongoDB Cluster Databases using the PSMDB Operator.
-home: https://github.com/valaparthvi/restapi-mongodb-odo
-maintainers:
-  - email: pvala@redhat.com
-    name: valaparthvi
-name: minimal-cluster
-version: 1.12.2

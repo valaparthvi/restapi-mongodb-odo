@@ -33,3 +33,5 @@ bin/
 go-rest-mongodb
 
 vendor
+*.swp
+.odo/odo-file-index.json

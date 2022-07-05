@@ -1,9 +1,14 @@
-# Install application and service with odo:
-1. Install percona distribution mongodb operator, and service binding operator on cluster
-2. odo create namespace mongodb-restapi
-3. odo init --devfile=go --name=restapi
-4. kubectl apply -f https://raw.githubusercontent.com/percona/percona-server-mongodb-operator/v1.12.0/deploy/cr-minimal.yaml
-5. odo add binding --service minimal-cluster --name my-binding --bind-as-files=false
+# (Optional) Create the namespace
+1. odo create namespace mongodb-restapi
+
+# Install the MongoDB service with Percona's MongoDB operator:
+1. Install percona distribution mongodb operator, and service binding operator on cluster.
+2. kubectl apply -f https://raw.githubusercontent.com/percona/percona-server-mongodb-operator/v1.12.0/deploy/cr-minimal.yaml
+
+# Create and deploy the application
+1. odo init --devfile=go --name=restapi
+2. odo add binding --service minimal-cluster --name my-binding --bind-as-files=false
+3. odo dev
 
 # REST API with Go and MongoDB
 REST API with Golang and MongoDB.
